@@ -15,6 +15,11 @@ export class SeriesController {
   async findPopular(){
     return await this.seriesService.findPopular();
   }
+
+  @Get("/detailCredits/:id")
+  async getSeriesDetailCredits(@Param("id") id:string){
+    return await this.seriesService.getSeriesDetailCredits(id);
+  }
   @Get()
   findAll() {
     return this.seriesService.findAll();

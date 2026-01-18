@@ -16,6 +16,11 @@ export class MoviesController {
   async findPopular() {
     return await this.moviesService.findPopular();
   }
+
+  @Get("/detailCredits/:id")
+  async getMovieDetail(@Param("id") id: string) {    
+    return await this.moviesService.getMovieDetailCredits(id);
+  }
   @Get()
   findAll() {
     return this.moviesService.findAll();
