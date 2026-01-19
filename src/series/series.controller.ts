@@ -20,6 +20,10 @@ export class SeriesController {
   async getSeriesDetailCredits(@Param("id") id:string){
     return await this.seriesService.getSeriesDetailCredits(id);
   }
+  @Get("/genres")
+  async getSeriesGenres(){
+    return await this.seriesService.getSeriesGenres()
+  }
   @Get()
   findAll() {
     return this.seriesService.findAll();

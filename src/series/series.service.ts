@@ -52,6 +52,18 @@ export class SeriesService {
       return new InternalServerErrorException("Internal Server Error")
     }
   }
+
+  async getSeriesGenres(){
+    try {
+      const {data} = await axios({
+        url:`${process.env.TMDB_URL}/genre/tv/list?api_key=${process.env.TMDB_API}`,
+        method:"get"
+      })
+      return data;
+    } catch (error) {
+      return new InternalServerErrorException("Internal Server Error")
+    }
+  }
   findAll() {
     return `This action returns all series`;
   }

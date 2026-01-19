@@ -51,7 +51,18 @@ export class MoviesService {
       data.creditsData = creditsData
       return data
     } catch (error) {
-      
+      return new InternalServerErrorException("Internal Server Error")
+    }
+  }
+
+  async getMoviesGenres(){
+    try {
+      const {data} = await axios({
+        url:`${process.env.TMDB_URL}/genre/movie/list?api_key=${process.env.TMDB_API}`,
+        method:"get"
+      })
+      return data
+    } catch (error) {
       return new InternalServerErrorException("Internal Server Error")
     }
   }
