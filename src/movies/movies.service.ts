@@ -66,6 +66,55 @@ export class MoviesService {
       return new InternalServerErrorException("Internal Server Error")
     }
   }
+
+  async getTopRatedMovies(page:string){
+    try {
+      const {data} = await axios({
+        url:`${process.env.TMDB_URL}/movie/top_rated?api_key=${process.env.TMDB_API}&language=en-US&page=${page}`
+      })
+
+      return data
+    } catch (error) {
+      return new InternalServerErrorException("Internal Server Error")
+    }
+  }
+
+  async getNowPlayingMovies(page:string){
+    try {
+      const {data} = await axios({
+        url:`${process.env.TMDB_URL}/movie/now_playing?api_key=${process.env.TMDB_API}&page=${page}`,
+        method:"get"
+      })
+
+      return data
+    } catch (error) {
+      return new InternalServerErrorException("Internal Server Error")
+    }
+  }
+
+  async getUpComingMovies(page:string){
+    try {
+      
+      const {data} = await axios({
+        url:`${process.env.TMDB_URL}/movie/upcoming?api_key=${process.env.TMDB_API}&language=en-US&page=${+page}`
+      })
+      
+      return data
+    } catch (error) {
+      return new InternalServerErrorException("Internal Server Error")
+    }
+  }
+
+  async getMoviesWithGenres(page:string, genres : string){
+    try {
+      const{data} = await axios({
+        url:`${process.env.TMDB_URL}/discover/movie?api_key=${process.env.TMDB_API}&language=en-US&include_adult=false&include_video=false&page=${page}&with_genres=${genres}`
+      })
+      return data;
+    } catch (error) {
+      return new InternalServerErrorException("Internal Server Error")
+    }
+  }
   findAll() {
     return `This action returns all movies`;
   }

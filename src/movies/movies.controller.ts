@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
@@ -26,6 +26,26 @@ export class MoviesController {
   async getMoviesGenres(){
     return await this.moviesService.getMoviesGenres()
   }
+  @Get("/top_rated")
+  async getTopRatedMovies(@Query("page") page:string){
+    return await this.moviesService.getTopRatedMovies(page)
+  }
+
+  @Get("/now_playing")
+  async getNowPlayingMovies(@Query("page") page:string){
+    return await this.moviesService.getNowPlayingMovies(page)
+  }
+
+  @Get("/upcoming")
+  async getUpComingMovies(@Query("page") page:string){
+    return await this.moviesService.getUpComingMovies(page)
+  }
+
+  @Get("/with_genres")
+  async getMoviesWithGenres(@Query("page") page:string, @Query("genres") genres : string){
+    return await this.moviesService.getMoviesWithGenres(page, genres)
+  }
+
   @Get()
   findAll() {
     return this.moviesService.findAll();

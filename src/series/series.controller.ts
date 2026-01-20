@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { SeriesService } from './series.service';
 import { CreateSeriesDto } from './dto/create-series.dto';
 import { UpdateSeriesDto } from './dto/update-series.dto';
@@ -23,6 +23,21 @@ export class SeriesController {
   @Get("/genres")
   async getSeriesGenres(){
     return await this.seriesService.getSeriesGenres()
+  }
+
+  @Get("/top_rated")
+  async getTopRatedSeries(@Query("page") page:string){
+    return await this.seriesService.getTopRatedSeries(page)
+  }
+
+  @Get("/on_the_air")
+  async getOnTheAirSeries(@Query("page") page:string){
+    return await this.seriesService.getOnTheAirSeries(page)
+  }
+
+  @Get("/with_genres")
+  async getSeriesWithGenres(@Query("page") page:string, @Query("genres") genres : string){
+    return await this.seriesService.getSeriesWithGenres(page, genres) 
   }
   @Get()
   findAll() {

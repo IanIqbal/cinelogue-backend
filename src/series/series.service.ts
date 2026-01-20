@@ -64,6 +64,46 @@ export class SeriesService {
       return new InternalServerErrorException("Internal Server Error")
     }
   }
+
+  async getTopRatedSeries(page:string){
+    try {
+      const {data} = await axios({
+        url:`${process.env.TMDB_URL}/tv/top_rated?api_key=${process.env.TMDB_API}&language=en-US&page=${page}`,
+        method:"get"
+      })
+
+      return data
+    } catch (error) {
+      return new InternalServerErrorException("Internal Server Error")
+    }
+  }
+
+  async getOnTheAirSeries(page:string){
+    try {
+      const {data} = await axios({
+        url:`${process.env.TMDB_URL}/tv/on_the_air?api_key=${process.env.TMDB_API}&language=en-US&page=${page}`,
+        method:"get"
+      })
+
+      return data
+    } catch (error) {
+      return new InternalServerErrorException("Internal Server Error")
+    }
+  }
+
+  async getSeriesWithGenres(page:string, genres : string){
+    try {
+      
+      const {data} = await axios({
+        url:`${process.env.TMDB_URL}/discover/tv?api_key=${process.env.TMDB_API}&language=en-US&with_genres=${genres}&page=${+page}&include_adult=false&include_video=false`,
+        method:"get"
+      })
+      return data
+    } catch (error) {      
+      return new InternalServerErrorException("Internal Server Error")
+    }
+  }
+
   findAll() {
     return `This action returns all series`;
   }
