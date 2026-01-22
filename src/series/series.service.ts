@@ -1,21 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateSeriesDto } from './dto/create-series.dto';
 import { UpdateSeriesDto } from './dto/update-series.dto';
 import axios from 'axios';
 import { InternalServerErrorException } from '@nestjs/common';
+import dayjs from "../common/dayjs.util"
+import { HelpersService } from 'src/helpers/helpers.service';
+
 @Injectable()
 export class SeriesService {
+  constructor(
+    @Inject("REDIS_CLIENT") private readonly redisClient: any,
+    private readonly helpersService: HelpersService
+  ){}
   create(createSeriesDto: CreateSeriesDto) {
     return 'This action adds a new series';
   }
 
   async findPopular(){
     try {
-      let {data} = await axios({
-        method:"get",
-        url:`${process.env.TMDB_URL}/tv/popular?api_key=${process.env.TMDB_API}&language=en-US&page=1`
-      })
-      return data
+      const seriesCache = await this.redisClient.get("popular_series");
+      if(seriesCache){
+        return seriesCache
+      }else{
+
+        let {data} = await axios({
+          method:"get",
+          url:`${process.env.TMDB_URL}/tv/popular?api_key=${process.env.TMDB_API}&language=en-US&page=1`
+        })
+        let secondsUntilMidnight = this.helpersService.timeUntilMidnight(new Date());
+        await this.redisClient.set("popular_series", data, {
+          ex: secondsUntilMidnight
+        })
+        return data
+      }
     } catch (error) {
       return new InternalServerErrorException("Internal Server Error")
     }

@@ -1,22 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import axios from 'axios';
 import { InternalServerErrorException } from '@nestjs/common';
+import { Redis } from '@upstash/redis';
+import { HelpersService } from 'src/helpers/helpers.service';
+import { RedisModule } from 'src/redis/redis.module';
 @Injectable()
 export class MoviesService {
+  constructor(
+    @Inject("REDIS_CLIENT") private readonly redisClient: Redis,
+    private readonly helpersService: HelpersService
+  ){}
   create(createMovieDto: CreateMovieDto) {
     return 'This action adds a new movie';
   }
 
   async findPopular(){
     try {
-      let {data} = await axios({
-        method:"get",
-        url:`${process.env.TMDB_URL}/movie/popular?api_key=${process.env.TMDB_API}&language=en-US&page=1`
-      })
-      return data;
-    } catch (error) {
+      
+      let cachedData = await this.redisClient.get("popular_movies");
+      
+      if(cachedData){
+        return cachedData
+      }else{
+
+        
+        let {data} = await axios({
+          method:"get",
+          url:`${process.env.TMDB_URL}/movie/popular?api_key=${process.env.TMDB_API}&language=en-US&page=1`
+        })
+        
+        let secondsUntilMidnight = this.helpersService.timeUntilMidnight(new Date());
+        
+        await this.redisClient.set("popular_movies", data, {
+          ex: secondsUntilMidnight
+        })
+        return data;
+      }
+    } catch (error) {      
       return new InternalServerErrorException("Internal Server Error")
     }
   }
