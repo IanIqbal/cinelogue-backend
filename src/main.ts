@@ -5,8 +5,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const allowedOrigins = [
     'http://localhost:3001', 
-    'https://cinelogue.id',
-    'https://cinelogue.vercel.app'
+    process.env.CLIENT_URL,
+    process.env.CLIENT_URL_ALT
   ];
 
   app.enableCors({
